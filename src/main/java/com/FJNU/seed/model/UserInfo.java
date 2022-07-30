@@ -2,7 +2,6 @@ package com.FJNU.seed.model;
 
 public class UserInfo {
     private String id;
-    private String account;
     private String password;
     private String name;
     private String gender;
@@ -16,12 +15,6 @@ public class UserInfo {
         this.id = id;
     }
 
-    public String getAccount() {
-        return account;
-    }
-    public void setAccount(String account) {
-        this.account = account;
-    }
 
     public String getPassword() {
         return password;
@@ -60,6 +53,6 @@ public class UserInfo {
 
     @Override
     public String toString() {
-        return "{id:" + id +",account:" + account + ",password:" + password +", name:" + name + ", gender:" + gender + ", phone:" + phone + ", idnumber:" + idnumber +"}";
+        return "{id:" + id +",password:" + password +", name:" + name + ", gender:" + gender + ", phone:" + phone + ", idnumber:" + idnumber +"}";
     }
 }

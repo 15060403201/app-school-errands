@@ -17,13 +17,15 @@ public class UserInfoDao {
     private JdbcTemplate jdbcTemplate;
 
     public List<UserInfo> getUserInfoList(Integer pageSize, Integer pageNum) {
-        final String sql = "select id,account,name,gender,phone,idnumber from userinfo";
+        final String sql = "select id,name,gender,phone,idnumber,password from userinfo";
         List<UserInfo> userInfoList = jdbcTemplate.query(sql, new UserInfoMapper());
         return userInfoList;
     }
 
-    public UserInfo getUserInfoByAccount(final String account) {
-        final String sql = "select account,name,gender,phone,idnumber from userinfo where account='" + account + "' limit 1";
+    public UserInfo getUserInfoById(final String id) {
+        final String sql = "select id,name,gender,phone,idnumber,password from userinfo where id='" + id + "' limit 1";
+        System.out.println(id);
+        System.out.println(sql);
         List<UserInfo> userInfoList = jdbcTemplate.query(sql, new UserInfoDao.UserInfoMapper());
         if (userInfoList == null || userInfoList.isEmpty()) {
             return null;
@@ -31,11 +33,10 @@ public class UserInfoDao {
         return userInfoList.get(0);
     }
 
-    public int createUserInfoByAccount(UserInfo newInfo) {
-        final String sqlPart1 = "INSERT INTO userInfo(id,account,password,name,gender,phone,idnumber) VALUES(";
+    public int createUserInfoById(UserInfo newInfo) {
+        final String sqlPart1 = "INSERT INTO userinfo(id,password,name,gender,phone,idnumber) VALUES(";
         StringBuilder sqlPart2Builder = new StringBuilder();
-        sqlPart2Builder.append(newInfo.getId()).append(",");
-        sqlPart2Builder.append("'").append(newInfo.getAccount()).append("',");
+        sqlPart2Builder.append("'").append(newInfo.getId()).append("',");
         sqlPart2Builder.append("'").append(newInfo.getPassword()).append("',");
         sqlPart2Builder.append("'").append(newInfo.getName()).append("',");
         sqlPart2Builder.append("'").append(newInfo.getGender()).append("',");
@@ -47,10 +48,10 @@ public class UserInfoDao {
         return jdbcTemplate.update(sql);
     }
 
-    public int modifyUserInfoByAccount(UserInfo newInfo) {
+    public int modifyUserInfoById(UserInfo newInfo) {
         final String sqlPart1 = "UPDATE userinfo SET ";
         String sqlPart2 = "";
-        final String sqlPart3 = " WHERE account=" + newInfo.getAccount();
+        final String sqlPart3 = " WHERE id=" + newInfo.getId();
 
         final String sql = sqlPart1 + sqlPart2 + sqlPart3;
         System.out.println(sql);
@@ -65,11 +66,11 @@ public class UserInfoDao {
         public UserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
             UserInfo userInfo = new UserInfo();
             userInfo.setId(rs.getString("id"));
-            userInfo.setAccount(rs.getString("account"));
             userInfo.setName(rs.getString("name"));
             userInfo.setGender(rs.getString("gender"));
             userInfo.setPhone(rs.getString("phone"));
             userInfo.setIdnumber(rs.getString("idnumber"));
+            userInfo.setPassword(rs.getString("password"));
 
             return userInfo;
         }

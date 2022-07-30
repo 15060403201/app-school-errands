@@ -1,41 +1,39 @@
 package com.FJNU.seed.controller;
 
-import java.util.List;
-
 import com.FJNU.seed.model.UserInfo;
 import com.FJNU.seed.model.UserInfoDao;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+@Api(tags={"用户操作接口"})
+@RestController
+//@RequestMapping("/user_info")
 
 @Controller // Spring框架扫描本注解会将类的对象实例化并管理
 public class UserInfoController {
     @Autowired // 通过Spring框架自动注入对象
     private UserInfoDao userInfoDao;
-
-    @GetMapping("/user_info") // 绑定接口地址yApi
+    @ApiOperation(value="用户信息列表",notes="注意问题点")
+    @GetMapping("/user_info") // 绑定接口地址
     @ResponseBody // 将返回值序列化为应答内容
     public List<UserInfo> userInfoList(
-            @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize
+            @ApiParam("当前页数") @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+            @ApiParam("每页条数")@RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize
     ) {
         List<UserInfo> userInfoList = userInfoDao.getUserInfoList(pageSize, pageNum);
         return userInfoList;
     }
-
+    @ApiOperation(value="获取某一用户信息",notes="注意问题点")
     @GetMapping("/user_info/{id}") // 绑定接口地址，支持获取地址参数
     @ResponseBody // 将返回值序列化为应答内容
     public UserInfo getUserInfoById(
-            @PathVariable String id // 从接口地址获取请求参数
+            @PathVariable("id") String id // 从接口地址获取请求参数
     ) {
-        UserInfo userInfo = userInfoDao.getUserInfoByAccount(id);
+        UserInfo userInfo = userInfoDao.getUserInfoById(id);
         return userInfo;
     }
 
@@ -43,18 +41,18 @@ public class UserInfoController {
     @ResponseBody // 将返回值序列化为应答内容
     public UserInfo createUserInfo(
             @RequestBody UserInfo newInfo) {
-        newInfo.setAccount(String.valueOf(System.currentTimeMillis()));//////////////////////
-        userInfoDao.createUserInfoByAccount(newInfo);
+        newInfo.setId(String.valueOf(System.currentTimeMillis()));//////////////////////
+        userInfoDao.createUserInfoById(newInfo);
         return newInfo;
     }
 
-    @RequestMapping(path = "/user_info/{account}", method = RequestMethod.POST) // 绑定接口地址，支持获取地址参数
+    @RequestMapping(path =  "/user_info/{id}", method = RequestMethod.POST) // 绑定接口地址，支持获取地址参数
     @ResponseBody // 将返回值序列化为应答内容
     public UserInfo modifyUserInfo(
-            @PathVariable String account, // 从接口地址获取请求参数
+            @PathVariable String id, // 从接口地址获取请求参数
             @RequestBody UserInfo newInfo) {
-        newInfo.setAccount(account);
-      userInfoDao.modifyUserInfoByAccount(newInfo);
+        newInfo.setId(id);
+      userInfoDao.modifyUserInfoById(newInfo);
         return newInfo;
     }
 }

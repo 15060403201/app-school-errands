@@ -22,11 +22,12 @@ public class OrderInfoDao {
         return orderInfoList;
     }
 
-    public OrderInfo getOrderInfoByOrderid(final String orderid) {
+
+    public OrderInfo getOrderInfoByOrderid(final String orderid) throws Exception {
         final String sql = "select orderid,account,name,phone,address0,quantity,address1,detail,price from orderinfo where orderid='" + orderid + "' limit 1";
         List<OrderInfo> orderInfoList = jdbcTemplate.query(sql, new OrderInfoMapper());
-        if (orderInfoList == null || orderInfoList.isEmpty()) {
-            return null;
+        if (orderInfoList.isEmpty()) {
+            throw new Exception("Not Found");
         }
         return orderInfoList.get(0);
     }
@@ -35,7 +36,7 @@ public class OrderInfoDao {
             final String sqlPart1 = "INSERT INTO orderinfo(orderid,account,name,phone,address0,quantity,address1,detail,price) VALUES(";
             StringBuilder sqlPart2Builder = new StringBuilder();
             sqlPart2Builder.append(newInfo.getOrderid()).append(",");
-            sqlPart2Builder.append("'").append(newInfo.getAccount()).append("',");
+            sqlPart2Builder.append("'").append(newInfo.getAccount()).append("',");  
             sqlPart2Builder.append("'").append(newInfo.getName()).append("',");
             sqlPart2Builder.append("'").append(newInfo.getPhone()).append("',");
             sqlPart2Builder.append("'").append(newInfo.getAddress0()).append("',");

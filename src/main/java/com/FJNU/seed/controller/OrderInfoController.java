@@ -1,26 +1,25 @@
 package com.FJNU.seed.controller;
 
-import java.util.List;
-
 import com.FJNU.seed.model.OrderInfo;
 import com.FJNU.seed.model.OrderInfoDao;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+@Api(tags={"订单操作接口"})
+@RestController
+//@RequestMapping("/order_info")
 
 @Controller // Spring框架扫描本注解会将类的对象实例化并管理
 public class OrderInfoController {
     @Autowired // 通过Spring框架自动注入对象
     private OrderInfoDao orderInfoDao;
-
-    @GetMapping("/order_info") // 绑定接口地址yApi
+    @ApiOperation(value="订单信息列表",notes="注意问题点")
+    @GetMapping("/order_info") // 绑定接口地址
     @ResponseBody // 将返回值序列化为应答内容
     public List<OrderInfo> orderInfoList(
             @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
@@ -29,16 +28,33 @@ public class OrderInfoController {
         List<OrderInfo> orderInfoList = orderInfoDao.getOrderInfoList(pageSize, pageNum);
         return orderInfoList;
     }
+    //  /test/{account}/{name}   @PathVariable
+    //  /test   @RequestParam
+//    @GetMapping("/test")
+//    public String getOrderInfo(@ApiParam(name="account",value="发布者账号",required=true)@RequestParam String account,
+//                               @ApiParam(name="name",value="姓名") @RequestParam String name) {
+//
+//        return account+name;
+//    }
 
+    @ApiOperation(value="获取某一订单信息",notes="注意问题点")
+    //http://test.sifei.info/lowcode/api/1010/order_info/1656260963285 ====>/order_info/{orderid}
+    //http://test.sifei.info/lowcode/api/1010/order_info?orderid=1656260963285 =====>/order_info
+    /**
+     * http://test.sifei.info/lowcode/api/1010/order_info?orderid=1656260963285
+     * url ：/order_info
+     * 请求方法参数：如果参数名一致，则不加注解@RequestParam
+     * 如过参数不一致，则@RequestParam（“orderid”）
+     */
     @GetMapping("/order_info/{orderid}") // 绑定接口地址，支持获取地址参数
     @ResponseBody // 将返回值序列化为应答内容
     public OrderInfo getOrderInfoByOrderid(
-            @PathVariable String orderid // 从接口地址获取请求参数
-    ) {
-        OrderInfo orderInfo = orderInfoDao.getOrderInfoByOrderid(orderid);
-        return orderInfo;
+            @PathVariable("orderid")  String orderid // 从接口地址获取请求参数
+    ) throws Exception {
+        return orderInfoDao.getOrderInfoByOrderid(orderid);
     }
 
+    @ApiOperation(value="创建新的订单信息")
     @RequestMapping(path = "/order_info", method = RequestMethod.POST) // 绑定接口地址，支持获取地址参数
     @ResponseBody // 将返回值序列化为应答内容
     public OrderInfo createOrderInfo(

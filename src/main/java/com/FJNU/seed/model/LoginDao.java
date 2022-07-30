@@ -22,6 +22,28 @@ public class LoginDao {
         return loginList;
     }
 
+    public int createLoginByAccount(Login newInfo) {     ////////////////////
+        final String sqlPart1 = "INSERT INTO login(account,password) VALUES(";
+        StringBuilder sqlPart2Builder = new StringBuilder();
+        sqlPart2Builder.append(newInfo.getAccount()).append(",");
+        sqlPart2Builder.append("'").append(newInfo.getPassword()).append("',");
+        final String sql = sqlPart1 + sqlPart2Builder.toString();
+        System.out.println(sql);
+
+        return jdbcTemplate.update(sql);
+    }
+
+    public int modifyLoginByAccount(Login newInfo) {
+        final String sqlPart1 = "UPDATE login SET ";
+        String sqlPart2 = "";
+        final String sqlPart3 = " WHERE account=" + newInfo.getAccount();
+
+        final String sql = sqlPart1 + sqlPart2 + sqlPart3;
+        System.out.println(sql);
+
+        return jdbcTemplate.update(sql);
+    }
+
 
 
 
